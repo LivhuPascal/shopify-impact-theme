@@ -1,0 +1,527 @@
+{% comment %} Section layout style {% endcomment %}
+{{ 'tpt-section.css' | asset_url | stylesheet_tag }}
+
+{% comment %} Section configuration {% endcomment %}
+{%- render 'tpt-section-setting', section: section -%}
+
+{%- if section.index and section.settings.section_lazyload -%}
+  <script src="{{ 'tpt-section-lazyload.js' | asset_url }}" defer="defer"></script>
+
+  <tpt-section-lazyload data-url="?section_id={{ section.id }}">
+    <div data-lazyload-element></div>
+    <span class="tpt-section_loader"></span>
+  </tpt-section-lazyload>
+{%- else -%}
+  {{ 'tpt-shop-the-look-2.css' | asset_url | stylesheet_tag }}
+  {{ 'tpt-slider-control.css' | asset_url | stylesheet_tag }}
+  {{ 'tpt-card-product.css' | asset_url | stylesheet_tag }}
+  {{ 'tpt-swiper.min.css' | asset_url | stylesheet_tag }}
+  {{ 'tpt-price.css' | asset_url | stylesheet_tag }}
+  <script src="{{ 'tpt-swiper.min.js' | asset_url }}" defer="defer"></script>
+  <script src="{{ 'tpt-lookbook-slider.js' | asset_url }}" defer="defer"></script>
+  {%- liquid
+    assign current_locale_isocode = request.locale.iso_code | split: '-'
+
+    assign enable_direction = false
+    assign localization_code = settings.locales_direction | split: ','
+
+    for locale in localization_code
+      if locale == current_locale_isocode[0]
+        assign enable_direction = true
+      endif
+    endfor
+  -%}
+
+  {% style %}
+    #shopify-section-{{ section.id }}{
+      --navigation-color: {{ section.settings.navigation_color }};
+      --navigation-background-color: {{ section.settings.navigation_background_color }};
+      --foreground_color: {{ section.settings.foreground_color }};
+    }
+  {% endstyle %}
+
+  {%- capture slider_options -%}
+    {
+      "slidesPerView": 1,
+      
+      {%- if section.settings.auto_play -%}
+      "autoplay": {
+        "delay": 2500,
+        "disableOnInteraction": false
+      },
+      {%- endif -%}
+      "spaceBetween": 30
+    }
+  {%- endcapture -%}
+
+  <div class="tpt-section_container">
+    <div class="tpt-section_content">
+      <div class="tpt-lookbook-slider_container">
+        {% comment %} Section header {% endcomment %}
+        {%- render 'tpt-section-header', section: section -%}
+
+        <div class="tpt-section-body">
+          {% comment %} Section body {% endcomment %}
+          <div class="tpt-lookbook-product">
+            <tpt-lookbook-slider class="lookbook-slider-container tpt-lookbook-slider-container-2">
+              <div
+                class="lookbook-slider-image"
+              >
+                <div class="lookbook-image">
+                  {% if section.settings.lookbook_image != blank %}
+                    {%- capture sizes -%}
+                      (min-width: {{ settings.page_width }}px) {{ settings.page_width }}px, (min-width: 768px) calc(100vw - 30px), (min-width: 320px) calc(100vw - 30px), 100vw
+                    {%- endcapture -%}
+
+                    {% assign image_alt = section.settings.lookbook_image.alt | default: shop.name %}
+
+                    {{
+                      section.settings.lookbook_image
+                      | image_url: width: section.settings.lookbook_image.width
+                      | image_tag:
+                        widths: '480, 640, 768, 850, 1024, 1280, 1366, 1440, 1640, 1920',
+                        sizes: sizes,
+                        width: section.settings.lookbook_image.width,
+                        height: section.settings.lookbook_image.height,
+                        alt: image_alt,
+                        loading: 'lazy'
+                    }}
+                  {% else %}
+                    {{ 'product-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                  {% endif %}
+                </div>
+
+                {%- for block in section.blocks -%}
+                  {% if block.settings.product.available %}
+                    <tpt-lookbook-item
+                      class="lookbook-item-slider lookbook-item"
+                      style="top:{{ block.settings.offset_top }}%; left:{{ block.settings.offset_left }}% "
+                    >
+                      <tpt-lookbook-button
+                        role="button"
+                        class="lookbook-btn lookbook-btn-slider"
+                        aria-label="Lookbook item"
+                        data-product-id="{{  block.settings.product.id }}"
+                        data-slide-index="{{ forloop.index }}"
+                        data-lookbook-url="{{ request.origin | append: block.settings.product.url}}"
+                        tabindex="0"
+                      >
+                        <span class="dot-center"></span>
+                        <span class="loader-cycle"></span>
+                      </tpt-lookbook-button>
+                    </tpt-lookbook-item>
+                  {% endif %}
+                {%- endfor -%}
+              </div>
+              <div class="lookbook-slider_product-wrapper">
+                <div
+                  class="lookbook-slider_product"
+                >
+                  <tpt-slider-product>
+                    <tpt-slider-options class="hidden">
+                      {{ slider_options }}
+                    </tpt-slider-options>
+  
+                    <div
+                      class="swiper product-slider"
+                      {%- if enable_direction -%}
+                        dir="rtl"
+                      {%- endif -%}
+                    >
+                      <div class="swiper-wrapper">
+                        {% if section.blocks.size > 0 %}
+                          {%- for block in section.blocks -%}
+                            {% if block.settings.product.available %}
+                              <div class="swiper-slide product-item" data-product-id="{{  block.settings.product.id }}">
+                                {% comment %} {% render 'tpt-card-product',
+                                  card_product: block.settings.product,
+                                  media_aspect_ratio: settings.product_image_ratio,
+                                  image_shape: settings.product_image_shape,
+                                  show_secondary_image: settings.product_show_secondary_image,
+                                  show_vendor: settings.product_show_vendor,
+                                  show_rating: settings.product_show_rating,
+                                  show_quick_add: settings.product_enable_quick_add,
+                                  section_id: section.id
+                                %} {% endcomment %}
+                                {% render 'tpt-card-product',
+                                  card_product: block.settings.product,
+                                  media_aspect_ratio: section.settings.image_ratio,
+                                  sizes: sizes,
+                                  show_secondary_image: block.settings.show_secondary_image,
+                                  section_id: block.id
+                                %}
+                              </div>
+                            {% endif %}
+                          {%- endfor -%}
+                        {% else %}
+                          <div class="swiper-slide product-item">
+                            {% comment %} {% render 'tpt-card-product',
+                              media_aspect_ratio: settings.product_image_ratio,
+                              image_shape: settings.product_image_shape,
+                              show_secondary_image: settings.product_show_secondary_image,
+                              show_vendor: settings.product_show_vendor,
+                              show_rating: settings.product_show_rating,
+                              show_quick_add: settings.product_enable_quick_add,
+                              section_id: section.id
+                            %} {% endcomment %}
+                            {% render 'tpt-card-product',
+                              card_product: block.settings.product,
+                              media_aspect_ratio: section.settings.image_ratio,
+                              sizes: sizes,
+                              show_secondary_image: block.settings.show_secondary_image,
+                              section_id: block.id
+                            %}
+                          </div>
+                        {% endif %}
+                      </div>
+                    </div>
+  
+                    {%- if section.settings.nav -%}
+                      <div class="swiper-button-prev"></div>
+                      <div class="swiper-button-next"></div>
+                    {%- endif -%}
+  
+                    {%- if section.settings.dots -%}
+                      <div class="swiper-paginations"></div>
+                    {%- endif -%}
+                  </tpt-slider-product>
+                </div>
+              </div>
+            </tpt-lookbook-slider>
+          </div>
+          {% comment %} End section body {% endcomment %}
+        </div>
+      </div>
+
+      {% comment %} Section footer {% endcomment %}
+      {%- render 'tpt-section-footer', section: section -%}
+    </div>
+  </div>
+{%- endif -%}{%- unless content_for_header contains 'tapita-section-script-tags' -%}{% style %}#shopify-section-{{ section.id }}{display: none !important;}{% endstyle %}{%- endunless -%}
+{% schema %}
+{
+  "name": "Tpt - Shop The Look #2",
+  "tag": "section",
+  "class": "section tpt-section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section header"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "default": "Shop Our Look",
+      "label": "Heading"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Heading Size",
+      "options": [
+        {
+          "value": "h4",
+          "label": "Small"
+        },
+        {
+          "value": "h2",
+          "label": "Medium"
+        },
+        {
+          "value": "h0",
+          "label": "Large"
+        }
+      ],
+      "default": "h2"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "sub_heading",
+      "label": "Sub heading"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Explore us to effortlessly shop the latest styles—view curated outfits and find exactly what you need to recreate the hottest looks of the season.</p>"
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Alignment",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "text",
+      "id": "top_button_label",
+      "label": "Button text"
+    },
+    {
+      "type": "url",
+      "id": "top_button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_header_target",
+      "label": "Blank link",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Section body"
+    },
+
+    {
+      "type": "image_picker",
+      "id": "lookbook_image",
+      "label": "Image"
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_play",
+      "default": false,
+      "label": "Slider autoplay"
+    },
+    {
+      "type": "checkbox",
+      "id": "nav",
+      "default": true,
+      "label": "Slider nav"
+    },
+    {
+      "type": "checkbox",
+      "id": "dots",
+      "default": true,
+      "label": "Slider dot"
+    },
+    {
+      "type": "range",
+      "id": "image_ratio",
+      "min": 50,
+      "max": 150,
+      "step": 1,
+      "label": "Image ratio",
+      "default": 80
+    },
+
+
+    {
+      "type": "header",
+      "content": "Section footer"
+    },
+    {
+      "type": "text",
+      "id": "bottom_button_label",
+      "label": "Button text"
+    },
+    {
+      "type": "url",
+      "id": "bottom_button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_footer_target",
+      "label": "Blank link",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Section layout"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background image"
+    },
+    {
+      "type": "checkbox",
+      "id": "section_full_width",
+      "label": "Section full width",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "section_max_width",
+      "min": 1200,
+      "max": 1900,
+      "step": 20,
+      "unit": "px",
+      "label": "Section max width",
+      "default": 1900
+    },
+    {
+      "type": "checkbox",
+      "id": "content_full_width",
+      "label": "Content full width",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "content_max_width",
+      "min": 800,
+      "max": 1900,
+      "step": 20,
+      "unit": "px",
+      "label": "Content max width",
+      "default": 1560
+    },
+    {
+      "type": "range",
+      "id": "padding_desktop",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding desktop",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_tablet_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding tablet, mobile",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_desktop",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Margin desktop",
+      "default": 90
+    },
+    {
+      "type": "range",
+      "id": "margin_tablet_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Margin tablet, mobile",
+      "default": 40
+    },
+
+    {
+      "type": "header",
+      "content": "Section color"
+    },
+    {
+      "type": "color",
+      "id": "navigation_color",
+      "label": "Navigation color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "navigation_background_color",
+      "label": "Navigation background color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color_background",
+      "id": "background_gradient_color",
+      "label": "Background gradient"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "foreground_color",
+      "label": "Foreground",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button_background_color",
+      "label": "Button background",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text",
+      "default": "#ffffff"
+    },
+
+    {
+      "type": "header",
+      "content": "Section optimize"
+    },
+    {
+      "type": "checkbox",
+      "id": "section_lazyload",
+      "label": "Section lazyload",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item_lookbook",
+      "name": "Lookbook item",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product"
+        },
+        {
+          "type": "range",
+          "id": "offset_top",
+          "min": 1,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "label": "Offset top",
+          "default": 50
+        },
+        {
+          "type": "range",
+          "id": "offset_left",
+          "min": 1,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "label": "Offset left",
+          "default": 50
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tpt - Shop The Look #2",
+      "blocks": []
+    }
+  ]
+} 
+{% endschema %}
