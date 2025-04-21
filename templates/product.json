@@ -55,7 +55,7 @@
             "stack_blocks": true,
             "selector_mode": "block",
             "color_mode": "variant",
-            "size_chart_page": ""
+            "size_chart_page": "conditions"
           }
         },
         "quantity_selector": {
