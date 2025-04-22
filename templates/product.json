@@ -58,26 +58,12 @@
             "size_chart_page": "conditions"
           }
         },
-        "offer_wde3iT": {
-          "type": "offer",
+        "kiwi_size_chart_recommender_kiwi_sizing_D3en7R": {
+          "type": "shopify://apps/kiwi-size-chart-recommender/blocks/kiwiSizing/b7369922-bf15-44ce-a121-a22a8fcbc4b0",
           "settings": {
-            "text_alignment": "start",
-            "icon_position": "aligned",
-            "icon": "none",
-            "icon_width": 24,
-            "title": "Shipping",
-            "content": "<p>Short content about your shipping rates or discounts.</p>",
-            "background": "#eaf2ed",
-            "text_color": "#00a341"
-          }
-        },
-        "foxkit_aio_upsell_size_chart_button_pLGB3V": {
-          "type": "shopify://apps/foxkit-aio-upsell/blocks/size-chart-button/13f41957-6b79-47c1-99a2-e52431f06fff",
-          "settings": {
-            "button_label": "learn more",
-            "button_style": "primary",
-            "show_icon": false,
-            "custom_class": ""
+            "product": "{{product}}",
+            "waitForElementSelector": "",
+            "waitForElementDelay": 5
           }
         },
         "forms_inline_hqTUtj": {
@@ -118,8 +104,7 @@
         "separator",
         "description",
         "variant_picker",
-        "offer_wde3iT",
-        "foxkit_aio_upsell_size_chart_button_pLGB3V",
+        "kiwi_size_chart_recommender_kiwi_sizing_D3en7R",
         "forms_inline_hqTUtj",
         "buy_buttons"
       ],
