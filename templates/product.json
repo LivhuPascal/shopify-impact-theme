@@ -63,7 +63,7 @@
           "settings": {
             "product": "{{product}}",
             "waitForElementSelector": "",
-            "waitForElementDelay": 5
+            "waitForElementDelay": 1
           }
         },
         "forms_inline_hqTUtj": {
