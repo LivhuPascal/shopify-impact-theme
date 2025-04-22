@@ -111,7 +111,7 @@
       "settings": {
         "full_width": false,
         "show_fixed_add_to_cart": true,
-        "desktop_media_width": 40,
+        "desktop_media_width": 45,
         "desktop_media_layout": "carousel_thumbnails_left",
         "mobile_media_size": "expanded",
         "mobile_carousel_control": "floating_dots",
