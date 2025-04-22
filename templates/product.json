@@ -71,6 +71,15 @@
             "text_color": "#00a341"
           }
         },
+        "foxkit_aio_upsell_size_chart_button_pLGB3V": {
+          "type": "shopify://apps/foxkit-aio-upsell/blocks/size-chart-button/13f41957-6b79-47c1-99a2-e52431f06fff",
+          "settings": {
+            "button_label": "learn more",
+            "button_style": "primary",
+            "show_icon": false,
+            "custom_class": ""
+          }
+        },
         "forms_inline_hqTUtj": {
           "type": "shopify://apps/forms/blocks/inline/8744a304-fcb1-4347-b211-bb6b4759a76a",
           "settings": {
@@ -110,6 +119,7 @@
         "description",
         "variant_picker",
         "offer_wde3iT",
+        "foxkit_aio_upsell_size_chart_button_pLGB3V",
         "forms_inline_hqTUtj",
         "buy_buttons"
       ],
