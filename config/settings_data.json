@@ -69,13 +69,6 @@
         "disabled": false,
         "settings": {}
       },
-      "6868439170666289573": {
-        "type": "shopify://apps/foxkit-aio-upsell/blocks/foxkit-theme-helper/13f41957-6b79-47c1-99a2-e52431f06fff",
-        "disabled": false,
-        "settings": {
-          "enable_ajax_atc": true
-        }
-      },
       "7241659924025436803": {
         "type": "shopify://apps/mp-size-chart/blocks/app-embed/305100b1-3599-492a-a54d-54f196ff1f94",
         "disabled": false,
