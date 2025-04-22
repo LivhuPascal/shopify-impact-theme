@@ -58,15 +58,27 @@
             "size_chart_page": "conditions"
           }
         },
+        "button_Pn49Md": {
+          "type": "button",
+          "settings": {
+            "link": "shopify://pages/conditions",
+            "text": "Button",
+            "size": "xl",
+            "style": "outline",
+            "stretch": true,
+            "background": "",
+            "text_color": ""
+          }
+        },
         "forms_inline_hqTUtj": {
           "type": "shopify://apps/forms/blocks/inline/8744a304-fcb1-4347-b211-bb6b4759a76a",
           "settings": {
             "form_id": "",
             "text_color": "#202020",
             "button_background_color": "#202020",
-            "button_label_color": "#FFFFFF",
-            "links_color": "#1878B9",
-            "errors_color": "#E02229",
+            "button_label_color": "#ffffff",
+            "links_color": "#1878b9",
+            "errors_color": "#e02229",
             "text_alignment": "center",
             "form_alignment": "center",
             "padding_top": 0,
@@ -74,10 +86,6 @@
             "padding_right": 0,
             "padding_left": 0
           }
-        },
-        "quantity_selector": {
-          "type": "quantity_selector",
-          "settings": {}
         },
         "buy_buttons": {
           "type": "buy_buttons",
@@ -100,8 +108,8 @@
         "separator",
         "description",
         "variant_picker",
+        "button_Pn49Md",
         "forms_inline_hqTUtj",
-        "quantity_selector",
         "buy_buttons"
       ],
       "settings": {
