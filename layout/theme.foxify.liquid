@@ -55,14 +55,36 @@ NOTE TO DEVELOPERS: welcome to Impact theme! We hope that you will enjoy editing
     {{ content_for_header }}
 
     {{- 'theme.css' | asset_url | stylesheet_tag: preload: true -}}
-  </head>
+  {%- render 'foxify-head' -%}</head>
 
-  <body class="{% if settings.show_page_transition %}page-transition{% endif %} {% if settings.zoom_image_on_hover %}zoom-image--enabled{% endif %}"><main role="main" id="main" class="anchor">
-      {{ content_for_layout }}
+  <body class="{% if settings.show_page_transition %}page-transition{% endif %} {% if settings.zoom_image_on_hover %}zoom-image--enabled{% endif %}"> {% sections 'foxify-header-group' %} 
+    {%- render 'shadow-dom-templates' -%}
 
+    <a href="#main" class="skip-to-content sr-only">{{ 'general.accessibility.skip_to_content' | t }}</a>
+
+    {%- if request.page_type != 'password' -%}
       
-      {%- if request.page_type != 'password' -%}
-        {%- sections 'footer-group' -%}
+      
+
+      {%- if settings.cart_type == 'popover' -%}
+        <cart-notification-drawer open-from="bottom" class="quick-buy-drawer drawer"></cart-notification-drawer>
       {%- endif -%}
-    </main></body>
+    {%- endif -%}
+
+    {%- if request.page_type == 'customers/account' or request.page_type == 'customers/order' or request.page_type == 'customers/addresses' -%}
+      {%- section 'account-banner' -%}
+    {%- endif -%}
+
+    <main role="main" id="main" class="anchor">
+      <div class="foxify-container">{{ content_for_layout }}</div>
+
+      {%- comment -%}
+      IMPLEMENTATION NOTE: due to the very complex logic of margin/padding collapsing in Impact, the footer group is
+      added into the main element to ensure that dynamic sections added into the footer group are properly laid out.
+      {%- endcomment -%}
+      {%- if request.page_type != 'password' -%}
+        
+      {%- endif -%}
+    </main>
+  {%- render "ecom_footer"-%}{%- render 'foxify-footer' -%} {% sections 'foxify-footer-group' %} </body>
 </html>

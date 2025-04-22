@@ -49,7 +49,9 @@ This file can be re-written at any time.
     {{ content_for_header }}
 
     {{- 'theme.css' | asset_url | stylesheet_tag: preload: true -}}
-  {%- render 'foxify-head' -%}</head>
+  {%- render 'foxify-head' -%}
+  {% render 'shogun-head' %}
+</head>
   <body class="{% if settings.show_page_transition %}page-transition{% endif %} {% if settings.zoom_image_on_hover %}zoom-image--enabled{% endif %}">
     {% include 'shogun-content-handler' %}
 
